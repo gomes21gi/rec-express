@@ -35,7 +35,8 @@ app.get('/users', (req, res) => {
 // });
 
 // a) Identifique o problema com os códigos de status HTTP usados no código.
-// O erro do codigo era a falta do status na resposta para o usuario, onde nesse caso especifica se da certo ou errado.
+/* O erro do codigo era a falta do status na resposta para o usuario, onde nesse caso 
+especifica se da certo ou errado.*/
 
 // b) Corrija o código, adicionando os status HTTP adequados para uma resposta RESTful.
 app.delete('/users/:id', (req, res) => {
@@ -50,7 +51,23 @@ app.delete('/users/:id', (req, res) => {
 });
 
 // Questão 3
-app.put('/users/:id', (req, res) => {
+// app.put('/users/:id', (req, res) => {
+//     const id = parseInt(req.params.id);
+//     const user = users.find(user => user.id === id);
+//     if (user) {
+//         user.name = req.body.name;
+//         res.status(200).json(user);
+//     } else {
+//         res.status(404).json({ message: 'Usuário não encontrado' });
+//     }
+// });
+   
+// a) Explique a diferença entre os métodos PUT e PATCH em uma API REST.
+/* O metodo PUT é utilizado para atualizar um recurso inteiro, enquanto o PATCH é 
+utilizado para atualizar um recurso parcialmente.*/
+
+// b) Corrija o código acima, implementando uma rota PATCH para permitir atualizações parciais.
+app.patch('/users/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const user = users.find(user => user.id === id);
     if (user) {
@@ -60,25 +77,61 @@ app.put('/users/:id', (req, res) => {
         res.status(404).json({ message: 'Usuário não encontrado' });
     }
 });
-   
-// a) Explique a diferença entre os métodos PUT e PATCH em uma API REST.
-// b) Corrija o código acima, implementando uma rota PATCH para permitir atualizações parciais.
 
 // Questão 4
+// app.get('/users/:id', (req, res) => {
+//     const id = parseInt(req.params.id);
+//     const user = users.find(user => user.id === id);
+//     if (user) {
+//         res.status(200).json(user);
+//     } else {
+//         res.status(404).json({ message: 'Usuário não encontrado' });
+//     }
+// });
+   
+// a) Explique o que é HATEOAS e por que ele é importante no modelo REST.
+/* HATEOAS é um acrônimo para Hypermedia As The Engine Of Application State, que é uma
+restrição de arquitetura que diz que a API deve retornar links para que o cliente possa 
+navegar pela API. Isso é importante para que o cliente não precise conhecer a API de 
+antemão, apenas seguir os links que a API retorna.*/
+
+// b) Altere o código para incluir links HATEOAS na resposta da API.
+function addLinks(user) {
+    return {
+        self: { href: `/users/${user.id}` },
+        delete: { href: `/users/${user.id}`, method: 'DELETE' },
+        update: { href: `/users/${user.id}`, method: 'PUT' },
+        partialUpdate: { href: `/users/${user.id}`, method: 'PATCH' }
+    };
+}
+
 app.get('/users/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const user = users.find(user => user.id === id);
     if (user) {
-        res.status(200).json(user);
+        res.status(200).json({
+            ...user,
+            links: addLinks(user),
+        });
     } else {
         res.status(404).json({ message: 'Usuário não encontrado' });
     }
 });
-   
-// a) Explique o que é HATEOAS e por que ele é importante no modelo REST.
-// b) Altere o código para incluir links HATEOAS na resposta da API.
 
 // Questão 5
+// app.get('/users/:id', (req, res) => {
+//     const id = req.params.id;
+//     const user = users.find(user => user.id === id);
+//     if (user) {
+//         res.status(200).json(user);
+//     } else {
+//         res.status(404).json({ message: 'Usuário não encontrado' });
+//     }
+// });
+
+// a) Qual é o problema relacionado à validação nesse código?
+
+// b) Corrija o código para incluir a validação adequada.
 app.get('/users/:id', (req, res) => {
     const id = req.params.id;
     const user = users.find(user => user.id === id);
@@ -89,15 +142,18 @@ app.get('/users/:id', (req, res) => {
     }
 });
 
-// a) Qual é o problema relacionado à validação nesse código?
-// b) Corrija o código para incluir a validação adequada.
-
 // Questão 6
+// app.post('/users', (req, res) => {
+//     const newUser = { id: users.length + 1, ...req.body };
+//     users.push(newUser);
+//     res.status(201).json(newUser);
+// });
+
+// a) Qual é o problema de segurança com a falta de validação no corpo da requisição?
+
+// b) Corrija o código para validar se o campo name está presente e atende a requisitos básicos, como ser uma string com pelo menos 3 caracteres.
 app.post('/users', (req, res) => {
     const newUser = { id: users.length + 1, ...req.body };
     users.push(newUser);
     res.status(201).json(newUser);
 });
-
-// a) Qual é o problema de segurança com a falta de validação no corpo da requisição?
-// b) Corrija o código para validar se o campo name está presente e atende a requisitos básicos, como ser uma string com pelo menos 3 caracteres.
