@@ -1,32 +1,53 @@
 // Questão 1
-app.post('/users/create', (req, res) => {
+// app.post('/users/create', (req, res) => {
+//     const newUser = { id: users.length + 1, ...req.body };
+//     users.push(newUser);
+//     res.status(201).json(newUser);
+// });
+      
+// app.get('/users/getAll', (req, res) => {
+//     res.status(200).json(users);
+// });
+
+app.post('/users', (req, res) => {
     const newUser = { id: users.length + 1, ...req.body };
     users.push(newUser);
     res.status(201).json(newUser);
 });
       
-app.get('/users/getAll', (req, res) => {
+app.get('/users', (req, res) => {
     res.status(200).json(users);
 });
-
 // a) Qual é o problema com o uso das rotas acima?
 // b) Explique como o código pode ser ajustado para se adequar ao Nível 2.
 // c) Corrija o código.
 
 // Questão 2
+// app.delete('/users/:id', (req, res) => {
+//     const id = parseInt(req.params.id);
+//     const userIndex = users.findIndex(user => user.id === id);
+//     if (userIndex !== -1) {
+//         users.splice(userIndex, 1);
+//         res.json({ message: 'Usuário excluído' });
+//     } else {
+//         res.json({ message: 'Usuário não encontrado' });
+//     }
+// });
+
+// a) Identifique o problema com os códigos de status HTTP usados no código.
+// O erro do codigo era a falta do status na resposta para o usuario, onde nesse caso especifica se da certo ou errado.
+
+// b) Corrija o código, adicionando os status HTTP adequados para uma resposta RESTful.
 app.delete('/users/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const userIndex = users.findIndex(user => user.id === id);
     if (userIndex !== -1) {
         users.splice(userIndex, 1);
-        res.json({ message: 'Usuário excluído' });
+        res.status(200).json({ message: 'Usuário excluído' });
     } else {
-        res.json({ message: 'Usuário não encontrado' });
+        res.status(404).json({ message: 'Usuário não encontrado' });
     }
 });
-
-// a) Identifique o problema com os códigos de status HTTP usados no código.
-// b) Corrija o código, adicionando os status HTTP adequados para uma resposta RESTful.
 
 // Questão 3
 app.put('/users/:id', (req, res) => {
